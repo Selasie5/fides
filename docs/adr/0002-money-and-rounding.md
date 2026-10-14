@@ -1,6 +1,6 @@
 # ADR 0002 Money representation and rounding
 
-Status: recorded baseline; merge approves this record. Related issue: #2.
+Related issue: #2.
 Decision owner: Selasie5, lead maintainer. Recorded: 14 October 2026.
 Domain and financial reviewers validate this baseline before production financial engines ship.
 
