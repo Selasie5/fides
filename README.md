@@ -15,6 +15,8 @@ Fides is global by design, with Ghana as the first intended locale. Currencies, 
 
 ## Technical direction
 
+Recorded decisions: [ADR 0001 Architecture](docs/adr/0001-architecture-and-module-boundaries.md) and [ADR 0002 Money and rounding](docs/adr/0002-money-and-rounding.md).
+
 Start with a **TypeScript modular monolith backed by PostgreSQL**, with a separate React app. Record formal decisions and supported versions in architecture decision records before implementation.
 
 | Area | Initial direction |
@@ -57,6 +59,8 @@ Financial commands atomically persist business records, allocations, journals, a
 Specify and review rate conventions, supported flat and reducing-balance methods, day counts, calendars, grace periods, precision, rounding, residual handling, fees, penalties, allocation order, excess credit, early settlement, accounting recognition, and report thresholds.
 
 Loans snapshot agreed product terms. Product changes must not alter existing loans. Restructuring preserves old and new schedule versions. Independently checked examples become test fixtures before the engines are implemented.
+
+Read the proposed [loan calculation and accounting policy](docs/domain/loan-calculations-and-accounting.md), its [worked examples](docs/domain/loan-policy-examples.md), and the [servicing decision record](docs/adr/loan-servicing-accounting-baseline.md) before implementing financial engines. These require domain and financial maintainer review; they do not establish regulatory compliance.
 
 ## First milestone
 
