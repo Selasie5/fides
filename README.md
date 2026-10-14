@@ -2,106 +2,132 @@
 
 **Open-source loan management infrastructure for microfinance and community lenders.**
 
-Fides is a headless loan engine (schedules, interest, and a double-entry ledger) with a thin, usable loan officer app built on top of it. Lenders who run on notebooks and spreadsheets get software they can trust. Developers get a reliable core they don't have to build from scratch.
+Fides combines a headless loan engine with a thin loan officer workspace. The core handles products, schedules, interest, an append-only double-entry ledger, and portfolio reports. The app uses only the public REST API.
 
-> **Status: early stage.** Fides is under active design and the architecture is changing quickly. We are **not accepting outside contributions yet**. Star or watch the repo to follow along.
+> **Status: design and foundation stage.** This repository is not a working lending system yet. Approved founding contributors can work on the scoped backlog. Outside contributor applications remain closed until architecture, contribution guidance, and the CLA process are ready.
 
----
+## Who it is for
 
-## Why Fides?
+- Small microfinance institutions, cooperatives, community lenders, and savings groups moving from paper or spreadsheets.
+- Developers and fintechs that need reusable lending infrastructure.
 
-*Fides* is Latin for trust, and the root of the word "fiduciary." Lending runs on trust: between lender and borrower, and between a lender and the system that holds its books. Most small lenders around the world still track money in notebooks and spreadsheets because the available software is either too heavy, too expensive, or built for banks rather than for them.
+Fides is global by design, with Ghana as the first intended locale. Currencies, interest conventions, institution categories, integrations, and reporting policies must be configurable and versioned. Jurisdiction requirements need verification for each applicable institution.
 
-Getting loan math and ledger records exactly right is hard. Flat vs. reducing-balance interest, rounding, grace periods, early repayment, penalties, and restructuring all look simple until real money is involved. Fides aims to make that part correct, auditable, and reusable.
+## Technical direction
 
-## Who it's for
+Start with a **TypeScript modular monolith backed by PostgreSQL**, with a separate React app. Record formal decisions and supported versions in architecture decision records before implementation.
 
-- **Microfinance institutions, cooperatives, susu collectors, savings groups, and small lenders** who need to originate loans, record repayments, and know who is overdue.
-- **Developers and fintechs** who want a loan engine with a clean API instead of building one themselves.
+| Area | Initial direction |
+| --- | --- |
+| Workspace | pnpm monorepo |
+| API | TypeScript, Fastify, REST, OpenAPI |
+| Persistence | PostgreSQL, Drizzle, reviewed SQL migrations |
+| App | React, Vite, TanStack Query |
+| Money | Integer minor units for posted amounts; exact decimal calculations and explicit rounding |
+| Events | Loan lifecycle audit events and PostgreSQL transactional outbox |
+| Testing | Vitest, property tests, real PostgreSQL integration tests, Playwright |
+| Local development | Docker Compose and synthetic fixtures |
 
-Fides is global by design. Our first users and first integrations will come from Ghana, but Ghana is a *locale pack*, not a limit. Currency, interest conventions, payment providers, institution categories, and regulatory reports are all configurable. Ghana's microfinance rules changed in January 2026, which is exactly why institution types are configuration and never hardcoded.
+Additional services and infrastructure require a demonstrated need and a written decision.
 
-## Architecture
+### Planned module boundaries
 
-Fides is a **headless core plus an opinionated app**, and the app uses only the public API.
+| Path | Responsibility |
+| --- | --- |
+| `apps/api` | REST, authentication, application services, persistence |
+| `apps/web` | Loan officer workspace using the public API |
+| `apps/worker` | Outbox processing and webhook delivery |
+| `packages/domain` | Framework-independent money, schedules, allocations, transitions, posting rules |
+| `packages/contracts` | Public schemas and OpenAPI |
+| `packages/sdk-ts` | Permissively licensed API client |
+| `packages/test-fixtures` | Synthetic scenarios and independently reviewed expected results |
+| `docs/adr` | Architecture decisions |
+| `docs/domain` | Financial policies and worked examples |
 
-```
-┌──────────────────────────────────────┐
-│  Fides App (loan officer workspace)  │
-└──────────────────┬───────────────────┘
-                   │  public API only
-┌──────────────────▼───────────────────┐
-│  Fides Core                          │
-│  • Loan product configuration        │
-│  • Schedule & interest engine        │
-│  • Double-entry ledger + audit trail │
-│  • Portfolio reporting (PAR, arrears)│
-│  • Webhooks & integrations           │
-└──────────────────────────────────────┘
-```
+These directories are planned, not implemented. Domain code must not depend on HTTP, UI, or database frameworks. The app must not import database models or calculate authoritative financial results locally.
 
-**Core (developer-facing)**
-- Loan products defined as data, not code: rates, fees, grace periods, penalties
-- Flat and reducing-balance interest, with effective rate calculation
-- Event-sourced, double-entry ledger with a full audit trail
-- Portfolio metrics: PAR 30/60/90, arrears aging, repayment rate
-- Regulatory building blocks: credit bureau reporting data, loan classification and non-performing loan reporting, restructuring and write-off events, and consent records
-- REST API and webhooks
-- Apache-2.0 SDKs
+### Ledger and audit history
 
-**App (user-facing)**
-- Register clients (individuals first, groups next)
-- Create loans from product templates and generate schedules
-- Record repayments (cash and mobile money)
-- See who is overdue today and run portfolio reports
+Posted journals are append-only. Corrections create linked reversals and replacement entries. Loan lifecycle events preserve business history; full application event sourcing is not required by this direction.
 
-## Design principles
+Financial commands atomically persist business records, allocations, journals, audit events, idempotency results, and outbox records. Journals balance per currency. Lender ownership is enforced across authorization and database references.
 
-1. **Correctness over features.** Money code gets exhaustive tests and clear, documented rounding rules.
-2. **Everything auditable.** Nothing in the ledger is edited or deleted, only corrected by new entries.
-3. **Configurable, not hardcoded.** Regional rules, institution categories, loan classification bands, and provisioning rates live in locale packs and product definitions.
-4. **Built for the field.** Weak connectivity and cash-and-mobile-money workflows shape the design from the start. Offline collection is not in v1, but every write carries a client-generated ID, repayments record collection time, and the API accepts batches, so offline support can be added without rewriting the core.
-5. **API first.** If the app can't be built well on the API, the API is wrong.
+### Financial policies before features
 
-## Roadmap
+Specify and review rate conventions, supported flat and reducing-balance methods, day counts, calendars, grace periods, precision, rounding, residual handling, fees, penalties, allocation order, excess credit, early settlement, accounting recognition, and report thresholds.
 
-- [ ] **Phase 1: Core.** Loan products, schedule generator, ledger, basic API
-- [ ] **Phase 2: App.** Minimal loan officer workspace that takes one loan from creation to full repayment
-- [ ] **Phase 3: Microfinance features.** Group lending, compulsory savings, loan cycles, PAR reporting
-- [ ] **Phase 4: Integrations.** Mobile money reconciliation, first locale pack (Ghana)
-- [ ] **Later.** Offline-capable field app, decisioning and explainable approvals, collections workflows, and a hosted version of Fides
+Loans snapshot agreed product terms. Product changes must not alter existing loans. Restructuring preserves old and new schedule versions. Independently checked examples become test fixtures before the engines are implemented.
 
+## First milestone
 
+One synthetic loan must complete this journey through the API and app:
+
+1. Register an individual client and choose a versioned product.
+2. Preview an independently validated schedule.
+3. Approve and disburse with atomic accounting.
+4. Record full and partial repayments and issue receipts.
+5. Show overdue obligations and outstanding principal.
+6. Fully settle and reconcile principal to the ledger.
+
+Retries and concurrent commands must not duplicate financial effects.
+
+## Scope and roadmap
+
+All capabilities below are planned.
+
+- **Foundation:** architecture and financial policies, workspace, CI, contribution workflow, private security reporting, licensing and CLA review.
+- **Core:** individual clients, versioned products, flat and reducing-balance schedules, origination, disbursement, repayments, receipts, ledger, overdue lists, and basic PAR reporting.
+- **App:** a minimal accessible workspace proving the public API supports the full lending journey.
+- **Integrations:** signed webhooks, mobile money settlement and reconciliation, and a verified Ghana locale pack.
+- **Later:** group lending, savings, loan cycles, restructuring and write-off workflows, offline-capable field app, and hosted offering.
+
+Credit scoring, automated decisioning, advanced analytics, and full offline collection are outside the initial milestone. Recording a repayment channel is distinct from integrating a live provider. Regulatory reporting and identity workflows require separately verified policies.
+
+## Reliability and field workflows
+
+- Writes use client-generated idempotency keys scoped to lender and operation.
+- Reusing a key with the same payload returns the original result; a changed payload conflicts.
+- Provider transaction references have separate duplicate checks.
+- Repayments retain collection time and server recording time.
+- Batch writes return a documented result per event.
+- Webhooks use stable event IDs and at-least-once delivery; consumers deduplicate.
+- Offline collection is designed for now and implemented later.
+
+## Contributor backlog
+
+The [issue tracker](https://github.com/Selasie5/fides/issues) contains scoped work with priorities, dependencies, acceptance criteria, boundaries, and review requirements.
+
+Start with [architecture](https://github.com/Selasie5/fides/issues/1), [money policy](https://github.com/Selasie5/fides/issues/2), [loan and accounting policies](https://github.com/Selasie5/fides/issues/3), [workspace](https://github.com/Selasie5/fides/issues/4), [contribution workflow](https://github.com/Selasie5/fides/issues/5), [CI](https://github.com/Selasie5/fides/issues/6), and [financial fixtures](https://github.com/Selasie5/fides/issues/7). Resolve dependencies before dependent implementation begins.
 
 ## Contributing
 
-Fides is open source, but **contributions are by application**. Because this code handles financial records, we vet contributors before granting the ability to change it.
+Contributions to the canonical repository are by application. Approved founding contributors can work on this backlog; outside applications are not open yet.
 
-- **Everyone** can read the code, fork it, use it under the license, and open issues or discussions with ideas and bug reports.
-- **Contributors** are approved through a short application: what you've built, why Fides, and which area you'd like to take on, followed by a small scoped task reviewed by the maintainers.
-- All contributions require signing a Contributor License Agreement (CLA), which also allows the project to offer the code under a commercial license, and go through code review. Sensitive areas such as the ledger and interest engine need sign-off from designated maintainers.
+- Claim an issue in a comment and agree scope with a maintainer.
+- Submit changes through pull requests; no direct pushes to `main`.
+- Include relevant tests, policy references, and documentation.
+- Financial code, migrations, and authentication require designated maintainer review.
+- Every contributor, including founders, completes the approved CLA process before contributions merge.
+- Record significant decisions and review financial examples independently.
 
-> The application process opens once the core architecture stabilizes. Details will be in [`CONTRIBUTING.md`](CONTRIBUTING.md).
+`CONTRIBUTING.md`, templates, `CODEOWNERS`, CI, and branch protection are tracked foundation work. Their presence and enforcement must not be assumed until completed.
 
 ## Security
 
-Please **do not** report security vulnerabilities in public issues. See [`SECURITY.md`](SECURITY.md) for how to report them privately.
+Never commit real borrower data, identity documents, credentials, account numbers, or production logs. Use synthetic examples.
 
-Never commit real customer data, account numbers, or credentials to this repository. Use synthetic test data only.
+Do not disclose vulnerabilities in public issues. A verified private reporting route and `SECURITY.md` are tracked in [the security issue](https://github.com/Selasie5/fides/issues/21). Until published, contact a maintainer privately to arrange secure disclosure without posting sensitive details.
 
 ## License
 
-- **Fides Core and Fides App:** [GNU AGPL-3.0](LICENSE)
-- **SDKs and client libraries:** Apache-2.0
+The intended model is **AGPL-3.0 for core and app** and **Apache-2.0 for SDKs**, with a reviewed contributor agreement supporting commercial licensing plans.
 
-AGPL-3.0 means anyone who modifies Fides and offers it to users over a network must publish their changes. Lenders who run Fides for their own use have no extra obligations, and code that talks to the API through the Apache-2.0 SDKs carries no AGPL terms. Companies that cannot use AGPL software can ask about a commercial license.
-
-A hosted version of Fides is planned for the future.
+License texts, package boundaries, notices, and the CLA process are tracked in [the licensing issue](https://github.com/Selasie5/fides/issues/22). Until completed, this README is not a substitute for a license grant or legal interpretation. Hosted and commercial licensing details will be documented separately.
 
 ## Disclaimer
 
-Fides is provided **as is**, without warranty of any kind. Lenders using Fides are solely responsible for their own legal and regulatory compliance, including licensing, consumer protection, data protection, and reporting obligations in their jurisdictions. Nothing in this project constitutes legal, financial, or regulatory advice.
+Fides is under development and not ready for production lending. Lenders remain responsible for applicable licensing, consumer protection, data protection, accounting, and reporting obligations. This repository does not establish legal, financial, or regulatory compliance.
 
-## Trademark
+## Name
 
-"Fides" and its logo are reserved by the project maintainers. The code license does not grant rights to the project name. Forks should use a different name.
+Fides comes from the Latin word for trust. Namespace availability and trademark review are tracked separately; technical name availability is not trademark clearance.
