@@ -30,11 +30,11 @@ A due amount becomes overdue the day after its due date. Scheduled interest for 
 
 ## 3 Numeric assumptions and rounding dependency
 
-Posted amounts are integer minor units; calculations use exact decimal arithmetic with at least 34 significant digits. Baseline proposal: round monetary obligations half-even to currency scale; never round rates to currency scale. Calculate regular payments from unrounded formula, then round each period's interest and the regular payment. Final principal is the exact remaining amount, and final payment is that principal plus final rounded interest.
+Posted amounts are integer minor units; calculations use exact decimal arithmetic with 50 significant digits and fixture stability checked at 80 digits, as specified in [ADR 0002](../adr/0002-money-and-rounding.md). Baseline: round monetary obligations half-even to currency scale; never round rates to currency scale. Calculate regular payments from unrounded formula, then round each period's interest and the regular payment. Final principal is the exact remaining amount, and final payment is that principal plus final rounded interest.
 
 For equal principal, divide principal in minor units: each non-final instalment receives floor(P/n); final receives the remainder. Reject schedules producing zero principal components or negative principal. Flat interest is rounded per period; total interest is the sum of posted period amounts. Split grace-adjusted flat principal across principal-paying periods.
 
-Issues #1 and #2 are closed, but no corresponding ADRs are currently in the repository. These assumptions need comparison with the lead maintainer's decisions; any difference must be resolved explicitly before engines ship. Record supported amount/rate/term bounds with the money implementation; reject overflow and non-amortizing schedules.
+[ADR 0001](../adr/0001-architecture-and-module-boundaries.md) records architecture and [ADR 0002](../adr/0002-money-and-rounding.md) records the numerical baseline. Record supported amount/rate/term bounds with the money implementation; reject overflow and non-amortizing schedules.
 
 ## 4 Formulas and grace periods
 
