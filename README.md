@@ -116,7 +116,7 @@ Contributions to the canonical repository are by application. Approved founding 
 
 Never commit real borrower data, identity documents, credentials, account numbers, or production logs. Use synthetic examples.
 
-Do not disclose vulnerabilities in public issues. A verified private reporting route and `SECURITY.md` are tracked in [the security issue](https://github.com/Selasie5/fides/issues/21). Until published, contact a maintainer privately to arrange secure disclosure without posting sensitive details.
+Read [SECURITY.md](SECURITY.md) for supported-version status and private reporting activation status. Do not disclose vulnerabilities in public issues. Private intake must be verified before it is advertised. Contributors should read the [threat model](docs/security/threat-model.md) and [engineering security practices](docs/security/engineering-practices.md).
 
 ## License
 
