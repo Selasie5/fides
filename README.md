@@ -46,7 +46,11 @@ Additional services and infrastructure require a demonstrated need and a written
 | `docs/adr` | Architecture decisions |
 | `docs/domain` | Financial policies and worked examples |
 
-These directories are planned, not implemented. Domain code must not depend on HTTP, UI, or database frameworks. The app must not import database models or calculate authoritative financial results locally.
+These directories now contain workspace scaffolding; lending behavior remains planned. Domain code must not depend on HTTP, UI, or database frameworks. The app must not import database models or calculate authoritative financial results locally.
+
+### Development setup
+
+See [Local development](docs/development.md) for the pinned Node/pnpm toolchain, fresh-clone commands, Docker PostgreSQL, Neon/Drizzle configuration, and validation commands.
 
 ### Ledger and audit history
 

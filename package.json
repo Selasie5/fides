@@ -1,0 +1,31 @@
+{
+  "name": "fides",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@10.34.7",
+  "engines": {
+    "node": "24.15.0",
+    "pnpm": "10.34.7"
+  },
+  "scripts": {
+    "format": "biome format --write .",
+    "format:check": "biome format .",
+    "lint": "biome lint . && node scripts/check-boundaries.mjs",
+    "typecheck": "pnpm --filter \"./packages/**\" build && pnpm -r typecheck",
+    "test": "pnpm --filter \"./packages/**\" build && vitest run",
+    "test:integration": "pnpm --filter \"./packages/**\" build && vitest run --config vitest.integration.config.ts",
+    "build": "pnpm -r build",
+    "dev": "pnpm --filter \"./packages/**\" build && pnpm --parallel --filter \"./apps/**\" dev",
+    "db:up": "docker compose up -d --wait",
+    "db:down": "docker compose down",
+    "db:generate": "pnpm --filter @fides/api db:generate",
+    "db:migrate": "pnpm --filter @fides/api db:migrate",
+    "db:seed": "pnpm --filter @fides/api db:seed"
+  },
+  "devDependencies": {
+    "@biomejs/biome": "2.5.15",
+    "@types/node": "24.19.2",
+    "typescript": "5.9.3",
+    "vitest": "5.0.4"
+  }
+}
