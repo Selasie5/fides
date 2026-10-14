@@ -1,0 +1,18 @@
+services:
+  postgres:
+    image: postgres:17.6-bookworm@sha256:f3bd19c606e442c3d7bdfa8002e03fe260a1023351e0ea4598032022b68dd6e3
+    environment:
+      POSTGRES_USER: fides
+      POSTGRES_PASSWORD: fides_local_only
+      POSTGRES_DB: fides_dev
+    ports:
+      - "127.0.0.1:5432:5432"
+    volumes:
+      - fides-postgres:/var/lib/postgresql/data
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U fides -d fides_dev"]
+      interval: 2s
+      timeout: 3s
+      retries: 15
+volumes:
+  fides-postgres:
