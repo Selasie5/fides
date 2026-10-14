@@ -15,6 +15,8 @@ Fides is global by design, with Ghana as the first intended locale. Currencies, 
 
 ## Technical direction
 
+Recorded decisions: [ADR 0001 Architecture](docs/adr/0001-architecture-and-module-boundaries.md) and [ADR 0002 Money and rounding](docs/adr/0002-money-and-rounding.md).
+
 Start with a **TypeScript modular monolith backed by PostgreSQL**, with a separate React app. Record formal decisions and supported versions in architecture decision records before implementation.
 
 | Area | Initial direction |
