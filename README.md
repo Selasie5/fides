@@ -58,6 +58,8 @@ Specify and review rate conventions, supported flat and reducing-balance methods
 
 Loans snapshot agreed product terms. Product changes must not alter existing loans. Restructuring preserves old and new schedule versions. Independently checked examples become test fixtures before the engines are implemented.
 
+Read the proposed [loan calculation and accounting policy](docs/domain/loan-calculations-and-accounting.md), its [worked examples](docs/domain/loan-policy-examples.md), and the [servicing decision record](docs/adr/loan-servicing-accounting-baseline.md) before implementing financial engines. These require domain and financial maintainer review; they do not establish regulatory compliance.
+
 ## First milestone
 
 One synthetic loan must complete this journey through the API and app:
