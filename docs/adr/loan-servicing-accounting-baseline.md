@@ -5,7 +5,7 @@ Decision owner: lead maintainer; required reviewers: domain advisor and financia
 
 ## Context
 
-The README defines methods and an auditable ledger but not their servicing semantics. Contributors need one deterministic financial contract before implementing engines. Issues #1 and #2 are closed but their written records are not present on main.
+The README defines methods and an auditable ledger but not their servicing semantics. Contributors need one deterministic financial contract before implementing engines. [ADR 0001](0001-architecture-and-module-boundaries.md) and [ADR 0002](0002-money-and-rounding.md) record the architecture and numerical baseline.
 
 ## Decision
 
@@ -25,4 +25,4 @@ The operational ledger recognizes scheduled interest at due dates. It does not i
 
 Preserve original schedules and policy snapshots. UI must disclose methods, charges and scheduled-versus-actual behaviour. Engine implementations cannot import the teaching guide's illustrative allocation order as a default. Follow the [worked examples](../domain/loan-policy-examples.md).
 
-Before merge, resolve numeric assumptions against #2 and record reviewer approval. Before release, configure safe amount/rate/term limits, verify required fixtures and accounting gates, and obtain lender applicability review. No domain or legal sign-off is invented by this ADR.
+Numerical assumptions follow ADR 0002; record domain and financial reviewer approval before adopting this servicing policy. Before release, configure safe amount/rate/term limits, verify required fixtures and accounting gates, and obtain lender applicability review. No domain or legal sign-off is invented by this ADR.
