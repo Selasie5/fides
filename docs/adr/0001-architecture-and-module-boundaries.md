@@ -1,8 +1,8 @@
 # ADR 0001 Architecture and module boundaries
 
-Status: recorded direction; merge approves this record. Related issue: #1.
+ Related issue: #1.
 Decision owner: Selasie5, lead maintainer. Recorded: 14 October 2026.
-This records the README direction and supplies concrete scaffold decisions. It does not assert runtime implementation or external sign-off.
+
 
 ## Context
 
