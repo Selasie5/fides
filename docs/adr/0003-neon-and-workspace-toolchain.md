@@ -1,6 +1,6 @@
 # ADR 0003 Neon persistence and workspace toolchain
 
-Status: proposed for approval with the issue #4 scaffold PR.
+Status: Approved
 Decision owner: Selasie5, lead maintainer. Recorded: 14 October 2026.
 
 ## Decision
