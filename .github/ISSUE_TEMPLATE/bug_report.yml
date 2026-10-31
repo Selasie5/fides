@@ -1,0 +1,85 @@
+name: Bug report
+description: Report a defect in the workspace, tooling, or documented behaviour. Do not report security vulnerabilities here.
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Use synthetic data only. Do not include real borrower information, credentials, tokens, account numbers, production logs, or vulnerability details. Read [SECURITY.md](https://github.com/Selasie5/fides/blob/develop/SECURITY.md) before reporting a security issue; private reporting is pending activation.
+  - type: textarea
+    id: summary
+    attributes:
+      label: Summary
+      description: What is wrong, and what did you expect instead?
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction
+    attributes:
+      label: Reproduction steps
+      description: Provide the smallest synthetic reproduction. Include commands, inputs, and observed output.
+      placeholder: |
+        1. Run ...
+        2. Open ...
+        3. Observe ...
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Commit or version
+      description: The commit SHA, branch, or release where the defect occurs.
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Domain or financial policy
+        - API or persistence
+        - Web app
+        - Worker or outbox
+        - Contracts or SDK
+        - Tooling, CI, or documentation
+        - Not sure
+    validations:
+      required: true
+  - type: textarea
+    id: policy
+    attributes:
+      label: Policy and expected behaviour
+      description: Cite the ADR, domain policy, issue, or documented behaviour that the defect contradicts. If no policy covers it, say so.
+    validations:
+      required: true
+  - type: textarea
+    id: tests
+    attributes:
+      label: Tests and verification
+      description: Which existing tests cover this area? What regression test should be added, or why is a test impractical?
+    validations:
+      required: true
+  - type: textarea
+    id: migrations
+    attributes:
+      label: Database and migration impact
+      description: Does reproducing or fixing this involve a schema change, migration, seed change, or database state? State "none" if not applicable.
+    validations:
+      required: true
+  - type: textarea
+    id: security
+    attributes:
+      label: Security impact
+      description: Describe any authorization, lender-isolation, logging, secret, dependency, or trust-boundary impact. If this is a vulnerability, stop and follow SECURITY.md instead of filing this issue.
+    validations:
+      required: true
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Data safety confirmation
+      options:
+        - label: I used synthetic data only and included no secrets, credentials, or real borrower information.
+          required: true
+        - label: This report is not a security vulnerability, or I have withheld exploit details and followed SECURITY.md.
+          required: true

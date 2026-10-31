@@ -1,0 +1,97 @@
+name: Feature request
+description: Propose scoped work for the Fides backlog. Read CONTRIBUTING.md before opening a pull request.
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Fides is at the design and foundation stage. Proposals must fit the recorded architecture and financial policy. Use synthetic data only and do not include secrets or real borrower information in this issue.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem or purpose
+      description: What lending or contributor problem does this solve, and who is affected?
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Proposed scope
+      description: Describe the smallest complete change that solves the problem.
+    validations:
+      required: true
+  - type: textarea
+    id: out-of-scope
+    attributes:
+      label: Out of scope
+      description: State what this proposal deliberately does not include.
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance
+    attributes:
+      label: Acceptance criteria
+      description: List observable, testable outcomes. Mark each with a task-list checkbox.
+      placeholder: |
+        - [ ] ...
+        - [ ] ...
+    validations:
+      required: true
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: Dependencies
+      description: Link related issues and state which must be resolved first. Write "none" if there are no dependencies.
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Affected area
+      options:
+        - Domain or financial policy
+        - API or persistence
+        - Web app
+        - Worker or outbox
+        - Contracts or SDK
+        - Tooling, CI, or documentation
+    validations:
+      required: true
+  - type: textarea
+    id: policy
+    attributes:
+      label: Policy and decision impact
+      description: Cite applicable ADRs or domain policies. Does this need a new or amended decision record? If it touches financial behaviour, name the policy version.
+    validations:
+      required: true
+  - type: textarea
+    id: tests
+    attributes:
+      label: Tests and fixtures
+      description: What tests, property checks, integration coverage, or independently checked financial fixtures are required?
+    validations:
+      required: true
+  - type: textarea
+    id: migrations
+    attributes:
+      label: Database and migration impact
+      description: Will this add or change tables, constraints, indexes, seed data, or reviewed SQL migrations? State "none" if not applicable.
+    validations:
+      required: true
+  - type: textarea
+    id: security
+    attributes:
+      label: Security and review impact
+      description: Describe the affected trust boundary, authorization and lender isolation, retry and concurrency behaviour, logging, dependencies, and whether a designated security/backend or financial reviewer is required.
+    validations:
+      required: true
+  - type: checkboxes
+    id: safety
+    attributes:
+      label: Data safety confirmation
+      options:
+        - label: This proposal uses synthetic examples only and includes no secrets or real borrower information.
+          required: true
+        - label: I understand this issue does not grant repository access or change the outside application status.
+          required: true

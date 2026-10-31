@@ -29,7 +29,7 @@ No unconditional automatic merge for updates affecting financial arithmetic, aut
 
 Every change uses a PR. Authentication, lender isolation, migrations, financial commands, provider callbacks, imports, webhook delivery, logging and CI need a designated security/backend reviewer. Money, schedules, allocation and journal changes additionally need a designated financial reviewer and independently checked fixtures.
 
-CODEOWNERS and branch rules should enforce ownership once configured in #5 and #6. Do not claim those gates exist before verification. If the lead maintainer uses a temporary review bypass, document rationale and validation in the PR; a bypass does not establish independent review.
+Issue #5 records CODEOWNERS ownership, but branch rules, required reviews, and contributor agreement checks must still be configured and verified in #6 and #22. Do not claim those gates exist before verification. If the lead maintainer uses a temporary review bypass, document rationale and validation in the PR; a bypass does not establish independent review.
 
 A security-sensitive PR describes the affected trust boundary, abuse cases, permissions, failure/rollback behaviour, retry/concurrency behaviour, logging impact and tests. It contains synthetic evidence only. Exploit details from a private finding stay in the private advisory until coordinated disclosure.
 
