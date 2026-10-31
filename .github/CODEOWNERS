@@ -1,2 +1,38 @@
+# CODEOWNERS records review ownership for paths in this repository.
+#
+# Only verified maintainer identities belong here. The repository currently
+# records one maintainer, @Selasie5 (lead maintainer and decision owner per
+# ADR 0001). Do not add teams, inferred identities, or unverified accounts.
+# A CODEOWNERS entry requests review; it does not by itself enforce a merge
+# gate. Branch protection, required reviews, and the contributor agreement
+# gate are tracked separately in #6 and #22 and are not yet verified.
+
 # Default owner for all files, including this CODEOWNERS file.
 * @Selasie5
+
+# Documentation, decision records, and repository policy.
+/docs/ @Selasie5
+/README.md @Selasie5
+/SECURITY.md @Selasie5
+/CONTRIBUTING.md @Selasie5
+
+# Financial policy, domain code, and independently checked fixtures.
+/docs/domain/ @Selasie5
+/docs/adr/ @Selasie5
+/packages/domain/ @Selasie5
+/packages/test-fixtures/ @Selasie5
+
+# Database schema, reviewed SQL migrations, and persistence configuration.
+/drizzle/ @Selasie5
+/apps/api/src/db/ @Selasie5
+/apps/api/drizzle.config.ts @Selasie5
+
+# Authentication and lender authorization (paths apply when implemented).
+/apps/api/src/auth/ @Selasie5
+
+# Public contracts and generated SDK surface.
+/packages/contracts/ @Selasie5
+/packages/sdk-ts/ @Selasie5
+
+# Repository automation, issue forms, and pull request policy.
+/.github/ @Selasie5

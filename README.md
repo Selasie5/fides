@@ -109,16 +109,18 @@ Start with [architecture](https://github.com/Selasie5/fides/issues/1), [money po
 
 ## Contributing
 
-Contributions to the canonical repository are by application. Approved founding contributors can work on this backlog; outside applications are not open yet.
+Contributions to the canonical repository are by application. Approved founding contributors can work on this backlog; outside applications remain closed until the contributor agreement and licensing review (#22), CI and branch protection (#6), and the remaining foundation work are complete.
 
-- Claim an issue in a comment and agree scope with a maintainer.
-- Submit changes through pull requests; no direct pushes to `main`.
-- Include relevant tests, policy references, and documentation.
+Read [CONTRIBUTING.md](CONTRIBUTING.md) for the full workflow: claiming issues, branch and commit conventions, pull request requirements, review paths, the required financial reviewer and contributor agreement gates, and the definition of done.
+
+- Claim an issue in a comment and agree scope with a maintainer; an assignee alone does not mean the issue is claimed.
+- Submit changes through pull requests against `develop`; no direct pushes to `develop` or `main`.
+- Include relevant tests, policy references, migrations, security prompts, and documentation.
 - Financial code, migrations, and authentication require designated maintainer review.
-- Every contributor, including founders, completes the approved CLA process before contributions merge.
+- Every contributor, including founders, completes the approved contributor agreement before contributions merge.
 - Record significant decisions and review financial examples independently.
 
-`CONTRIBUTING.md`, templates, `CODEOWNERS`, CI, and branch protection are tracked foundation work. Their presence and enforcement must not be assumed until completed.
+`CONTRIBUTING.md`, issue forms, the pull request template, and `CODEOWNERS` now exist. CI, branch protection, required-review automation, and the approved contributor agreement process are still pending (#6 and #22). Their enforcement must not be assumed until configured and verified; the documents do not claim those gates are active.
 
 ## Security
 
